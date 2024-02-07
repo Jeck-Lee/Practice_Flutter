@@ -83,17 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn().then((result){
-      result?.authentication.then((googleKey){
-        print(googleKey.accessToken);
-        print(googleKey.idToken);
-        print(GoogleSignIn().currentUser?.displayName);
-      }).catchError((err){
-        print('inner error');
-      });
-    }).catchError((err){
-      print('error occured');
-    });
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -156,7 +146,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: signInWithGoogle,
+        onPressed: () async {
+          final userInfo = await signInWithGoogle();
+          print("------Google Login------");
+          // print("userInfo: ${userInfo}");
+          print("accessToken: ${userInfo.credential?.accessToken}");
+          print("name: ${userInfo.additionalUserInfo?.profile?["name"]}");
+          print("email: ${userInfo.additionalUserInfo?.profile?["email"]}");
+          print("------------------------");
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
