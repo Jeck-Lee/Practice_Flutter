@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -20,24 +22,37 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  final String testCode = """
+  <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container" style="height:100%;width:100%">
+  <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+  {
+  "autosize": true,
+  "symbol": "NASDAQ:AAPL",
+  "interval": "D",
+  "timezone": "Etc/UTC",
+  "theme": "light",
+  "style": "1",
+  "locale": "en",
+  "enable_publishing": false,
+  "allow_symbol_change": true,
+  "calendar": false,
+  "support_host": "https://www.tradingview.com"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+  """;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -58,7 +73,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget myPlayer(String url) {
     debugPrint('----------WebView con: $url');
     return InAppWebView(
-      initialUrlRequest: URLRequest(url: WebUri("https://naver.com"),),
+      key: GlobalKey(),
+      initialUrlRequest: URLRequest(
+        // url: WebUri("https://naver.com"),
+        url: WebUri.uri(
+          Uri.dataFromString(
+            widget.testCode,
+            mimeType: 'text/html',
+            encoding: Encoding.getByName('utf-8'),
+          ),
+        ),
+      ),
       initialSettings: InAppWebViewSettings(
         // URL 로딩 제어
         useShouldOverrideUrlLoading: true,
@@ -94,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("TEST!"),
       ),
       body: myPlayer("https://pub.dev/"),
       floatingActionButton: FloatingActionButton(
