@@ -85,22 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       initialSettings: InAppWebViewSettings(
-        // URL 로딩 제어
-        useShouldOverrideUrlLoading: true,
-        // 미디어 자동 재생
-        mediaPlaybackRequiresUserGesture: false,
         javaScriptEnabled: true,
-        // 팝업 여부
-        javaScriptCanOpenWindowsAutomatically: true,
         // 하이브리드 사용을 위한 안드로이드 웹뷰 최적화
         useHybridComposition: true,
-        // 멀티 윈도우 허용
-        supportMultipleWindows: true,
-        // 웹뷰 내 미디어 재생 허용
-        allowsInlineMediaPlayback: true,
-        transparentBackground: true,
-        // iOS option
-        disallowOverScroll: true,
       ),
       onWebViewCreated: (InAppWebViewController controller) {
         webView = controller;
