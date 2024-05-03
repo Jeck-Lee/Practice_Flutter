@@ -3,34 +3,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../router_provider.dart';
 
-class ThreeScreen extends StatelessWidget {
-  const ThreeScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const ThreeView();
+    return const LoginView();
   }
 }
 
-class ThreeView extends ConsumerWidget {
-  const ThreeView({super.key});
+class LoginView extends ConsumerWidget {
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Three"),
+        title: const Text("Login"),
       ),
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
-              const Text("Here is the Three"),
               ElevatedButton(
                 onPressed: () {
-                  ref.read(userProvider.notifier).logout();
+                  ref.read(userProvider.notifier).login(name: "name");
                 },
-                child: const Text("Logout"),
+                child: const Text("Login"),
               ),
             ],
           ),
