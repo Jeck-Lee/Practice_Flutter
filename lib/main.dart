@@ -54,6 +54,110 @@ class MyHomePage extends StatefulWidget {
 <!-- TradingView Widget END -->
   """;
 
+  final String testListString = """
+  <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://kr.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">트레이딩뷰에서 모든 시장 추적</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+  {
+  "width": "100%",
+  "height": "100%",
+  "defaultColumn": "overview",
+  "screener_type": "crypto_mkt",
+  "displayCurrency": "USD",
+  "colorTheme": "light",
+  "locale": "kr"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+  """;
+
+  final String watchListString = """
+  <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://kr.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">트레이딩뷰에서 모든 시장 추적</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+  {
+  "colorTheme": "light",
+  "dateRange": "12M",
+  "showChart": false,
+  "locale": "kr",
+  "width": "100%",
+  "height": "100%",
+  "largeChartUrl": "",
+  "isTransparent": false,
+  "showSymbolLogo": true,
+  "showFloatingTooltip": false,
+  "tabs": [
+    {
+      "title": "Indices",
+      "symbols": [
+        {
+          "s": "KRX:005930",
+          "d": "삼성전자"
+        },
+        {
+          "s": "KRX:352820",
+          "d": "HYBE"
+        },
+        {
+          "s": "KRX:005380",
+          "d": "HYNDAI MTR"
+        },
+        {
+          "s": "KRX:293490",
+          "d": "KAKAO GAMES"
+        },
+        {
+          "s": "KRX:000660",
+          "d": "SK HYNIX"
+        },
+        {
+          "s": "KRX:035420",
+          "d": "NAVER"
+        },
+        {
+          "s": "KRX:035720",
+          "d": "KAKAO"
+        },
+        {
+          "s": "KRX:006400",
+          "d": "SAMSUNG SDI CO.,LTD."
+        },
+        {
+          "s": "KRX:267260",
+          "d": "HD HYUNDAI ELECTRIC"
+        }
+      ],
+      "originalTitle": "Indices"
+    },
+    {
+      "title": "Crypto",
+      "symbols": [
+        {
+          "s": "UPBIT:BTCKRW",
+          "d": " BITCOIN / KRW"
+        },
+        {
+          "s": "UPBIT:ETHKRW",
+          "d": "ETHEREUM / KRW"
+        },
+        {
+          "s": "UPBIT:BSVKRW",
+          "d": " BITCOIN SV / KRW"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+  """;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -78,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // url: WebUri("https://naver.com"),
         url: WebUri.uri(
           Uri.dataFromString(
-            widget.testCode,
+            widget.watchListString,
             mimeType: 'text/html',
             encoding: Encoding.getByName('utf-8'),
           ),
