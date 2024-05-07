@@ -1,44 +1,37 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:practice_flutter/model/user_model.dart';
 
-import 'model/user_model.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/one_screen.dart';
 import 'screens/three_screen.dart';
 import 'screens/two_screen.dart';
 
-final routerProvider = Provider<GoRouter>((ref) {
-  // authProvider의 상태가 변경될 때 마다 redirection
-  final authProvider = _AuthNotifier(ref: ref);
+class RouterProvider extends ChangeNotifier {
+  final authProvider = _AuthNotifier();
 
-  return GoRouter(
-    initialLocation: "/login",
-    routes: authProvider._routes,
-    redirect: authProvider._redirectLogic, // navigate 될 때마다 호출
-    refreshListenable: authProvider, // authProvider 상태를 listen하여 상태가 변하면 redirect 실행
-  );
-});
+  GoRouter get routes => GoRouter(
+        initialLocation: "/login",
+        routes: authProvider._routes,
+        redirect: authProvider._redirectLogic, // navigate 될 때마다 호출
+        refreshListenable: authProvider, // authProvider 상태를 listen하여 상태가 변하면 redirect 실행
+      );
 
-class _AuthNotifier extends ChangeNotifier {
-  final Ref ref;
-
-  _AuthNotifier({required this.ref}) {
-    // UserModel의 상태 listen
-    // 상태가 변경되면 notifyListeners() 호출
-    ref.listen<UserModel?>(
-      userProvider,
-          (previous, next) {
-        if (previous != next) {
-          notifyListeners();
-        }
-      },
-    );
+  void login({required String name}) {
+    authProvider._login(name: name);
   }
 
+  void logout() {
+    authProvider._logout();
+  }
+}
+
+class _AuthNotifier extends ChangeNotifier {
+  UserModel? _userModel;
+
   Future<String?> _redirectLogic(_, GoRouterState state) async {
-    final user = ref.read(userProvider);
+    final user = _userModel;
     const loginPath = "/login";
     final loggingIn = state.uri.toString() == loginPath;
 
@@ -52,47 +45,46 @@ class _AuthNotifier extends ChangeNotifier {
   }
 
   List<GoRoute> get _routes => [
-    GoRoute(
-      path: "/",
-      builder: (_, state) => const HomeScreen(),
-      routes: [
         GoRoute(
-          path: "one",
-          builder: (_, state) => const OneScreen(),
+          path: "/",
+          builder: (_, state) => const HomeScreen(),
           routes: [
             GoRoute(
-              path: "two",
-              builder: (_, state) => const TwoScreen(),
+              path: "one",
+              builder: (_, state) => const OneScreen(),
               routes: [
                 GoRoute(
-                  path: "three",
-                  name: "three",
-                  builder: (_, state) => const ThreeScreen(),
+                  path: "two",
+                  builder: (_, state) => const TwoScreen(),
+                  routes: [
+                    GoRoute(
+                      path: "three",
+                      name: "three",
+                      builder: (_, state) => const ThreeScreen(),
+                    )
+                  ],
                 )
               ],
-            )
+            ),
           ],
         ),
-      ],
-    ),
-    GoRoute(
-      path: "/login",
-      builder: (_, state) => const LoginScreen(),
-    ),
-  ];
-}
+        GoRoute(
+          path: "/login",
+          builder: (_, state) => const LoginScreen(),
+        ),
+      ];
 
-final userProvider = StateNotifierProvider<UserStateNotifier, UserModel?>(
-        (ref) => UserStateNotifier());
-
-class UserStateNotifier extends StateNotifier<UserModel?> {
-  UserStateNotifier() : super(null);
-
-  void login({required String name}) {
-    state = UserModel(name: name);
+  void _login({required String name}) {
+    if (_userModel?.name != name) {
+      _userModel = UserModel(name: name);
+      notifyListeners();
+    }
   }
 
-  void logout() {
-    state = null;
+  void _logout() {
+    if (_userModel != null) {
+      _userModel = null;
+      notifyListeners();
+    }
   }
 }

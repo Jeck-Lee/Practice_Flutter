@@ -2,25 +2,60 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'router_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as RiverPod;
+import 'package:practice_flutter/router_provider.dart';
+import 'package:practice_flutter/screens/riverpod/router_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   /// Webview 위젯 바인딩 초기화 - 웹뷰와 플러터 엔진과의 상호작용을 위함
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const ProviderScope(
-    child: MyApp(),
-  ));
+  runApp(
+    /// Provider
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => RouterProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+
+    /// RiverPod
+    // const RiverPod.ProviderScope(
+    //   child: RiverPodMyApp(),
+    // ),
+  );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final router = context.watch<RouterProvider>().routes;
+
+    return MaterialApp.router(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      routeInformationProvider: router.routeInformationProvider,
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+    );
+  }
+}
+
+class RiverPodMyApp extends RiverPod.ConsumerWidget {
+  const RiverPodMyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context, RiverPod.WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

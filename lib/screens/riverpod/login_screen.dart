@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:practice_flutter/router_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'router_provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -11,16 +12,14 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class LoginView extends StatelessWidget {
+class LoginView extends ConsumerWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final router = context.read<RouterProvider>();
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: const Text("Login (RiverPod)"),
       ),
       body: SafeArea(
         child: Center(
@@ -28,7 +27,7 @@ class LoginView extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  router.login(name: "name");
+                  ref.read(userProvider.notifier).login(name: "name");
                 },
                 child: const Text("Login"),
               ),
