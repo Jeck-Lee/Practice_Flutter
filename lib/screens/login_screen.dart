@@ -26,11 +26,19 @@ class LoginView extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
+              const SizedBox(height: 48),
               ElevatedButton(
                 onPressed: () {
-                  router.login(name: "name");
+                  router.login(token: "abcd");
                 },
                 child: const Text("Login"),
+              ),
+              const SizedBox(height: 48),
+              ElevatedButton(
+                onPressed: () {
+                  router.login(token: "1234");
+                },
+                child: const Text("Login by Expired token"),
               ),
             ],
           ),

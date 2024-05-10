@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:practice_flutter/model/user_model.dart';
+import 'package:practice_flutter/network/storage_repository.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
@@ -9,6 +10,12 @@ import 'screens/three_screen.dart';
 import 'screens/two_screen.dart';
 
 class RouterProvider extends ChangeNotifier {
+  RouterProvider({
+    required this.storageRepository,
+  });
+
+  final StorageRepository storageRepository;
+
   final authProvider = _AuthNotifier();
 
   GoRouter get routes => GoRouter(
@@ -18,24 +25,26 @@ class RouterProvider extends ChangeNotifier {
         refreshListenable: authProvider, // authProvider 상태를 listen하여 상태가 변하면 redirect 실행
       );
 
-  void login({required String name}) {
-    authProvider._login(name: name);
+  Future<void> login({required String token}) async {
+    await storageRepository.saveToken(token);
+    authProvider._login(token: token);
   }
 
-  void logout() {
+  Future<void> logout() async {
+    await storageRepository.removeAllTokens();
     authProvider._logout();
   }
 }
 
 class _AuthNotifier extends ChangeNotifier {
-  UserModel? _userModel;
+  final storage = const FlutterSecureStorage();
+  String? _token;
 
   Future<String?> _redirectLogic(_, GoRouterState state) async {
-    final user = _userModel;
     const loginPath = "/login";
     final loggingIn = state.uri.toString() == loginPath;
 
-    if (user == null) {
+    if (_token == null) {
       return loggingIn ? null : loginPath;
     }
 
@@ -74,16 +83,16 @@ class _AuthNotifier extends ChangeNotifier {
         ),
       ];
 
-  void _login({required String name}) {
-    if (_userModel?.name != name) {
-      _userModel = UserModel(name: name);
+  void _login({required String token}) {
+    if (_token != token) {
+      _token = token;
       notifyListeners();
     }
   }
 
   void _logout() {
-    if (_userModel != null) {
-      _userModel = null;
+    if (_token != null) {
+      _token = null;
       notifyListeners();
     }
   }

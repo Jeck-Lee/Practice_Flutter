@@ -1,22 +1,61 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as RiverPod;
+import 'package:get_it/get_it.dart';
+import 'package:practice_flutter/network/api_repository.dart';
+import 'package:practice_flutter/network/storage_repository.dart';
+import 'package:practice_flutter/network/token_interceptor.dart';
 import 'package:practice_flutter/router_provider.dart';
 import 'package:practice_flutter/screens/riverpod/router_provider.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   /// Webview 위젯 바인딩 초기화 - 웹뷰와 플러터 엔진과의 상호작용을 위함
   WidgetsFlutterBinding.ensureInitialized();
 
+  final Dio dio = Dio();
+
+  final getIt = GetIt.instance;
+  final apiRepository = ApiRepository(dio);
+  getIt.registerSingleton(apiRepository);
+  final storageRepository = StorageRepository();
+  getIt.registerSingleton(storageRepository);
+
+  final RouterProvider routerProvider = RouterProvider(
+    storageRepository: storageRepository,
+  );
+
+  dio.interceptors.add(
+    TokenInterceptor(
+      routerProvider: routerProvider,
+      apiRepository: apiRepository,
+      storageRepository: storageRepository,
+    ),
+  );
+
+  /// Dio Log Interceptor
+  /// 디버그 모드에서만 Dio 인스턴스의 모든 로그를 출력
+  if (kDebugMode) {
+    dio.interceptors.add(PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: true,
+      compact: true,
+    ));
+  }
+
   runApp(
     /// Provider
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => RouterProvider(),
+          create: (_) => routerProvider,
         ),
       ],
       child: const MyApp(),

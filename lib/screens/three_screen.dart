@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:practice_flutter/network/api_repository.dart';
+import 'package:practice_flutter/network/storage_repository.dart';
 import 'package:provider/provider.dart';
 
 import '../router_provider.dart';
@@ -27,7 +30,33 @@ class ThreeView extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
+              const SizedBox(height: 48),
               const Text("Here is the Three"),
+              const SizedBox(height: 48),
+              ElevatedButton(
+                onPressed: () async {
+                  final storageRepository = GetIt.instance<StorageRepository>();
+                  await storageRepository.saveRefreshToken("abcd");
+                  final token = await storageRepository.readToken();
+                  if (token != null) {
+                    await GetIt.instance<ApiRepository>().test(token: token);
+                  }
+                },
+                child: const Text("Test API"),
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () async {
+                  final storageRepository = GetIt.instance<StorageRepository>();
+                  await storageRepository.saveRefreshToken("1234");
+                  final token = await storageRepository.readToken();
+                  if (token != null) {
+                    await GetIt.instance<ApiRepository>().test(token: token);
+                  }
+                },
+                child: const Text("Test API with\nExpired refreshToken"),
+              ),
+              const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
                   router.logout();
