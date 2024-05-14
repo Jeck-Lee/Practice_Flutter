@@ -36,6 +36,12 @@ class _HomeViewState extends State<HomeView> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  context.push("/one/two");
+                },
+                child: const Text("Push Two"),
+              ),
+              ElevatedButton(
+                onPressed: () {
                   context.pushNamed("three");
                 },
                 child: const Text("Push three for Name"),
