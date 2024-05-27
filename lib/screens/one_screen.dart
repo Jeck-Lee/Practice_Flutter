@@ -18,13 +18,26 @@ class OneView extends StatefulWidget {
 }
 
 class _OneViewState extends State<OneView> {
-  final controller = ScrollController();
-  final dataKey = GlobalKey();
+  final ScrollController _controller = ScrollController();
+  List<String> _headers = ['Header 1', 'Header 2', 'Header 3', 'Header 4'];
+  int _selectedHeaderIndex = 0;
+
+  void initState() {
+    super.initState();
+    _controller.addListener(_scrollListener);
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.removeListener(_scrollListener);
+    _controller.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    setState(() {
+      _selectedHeaderIndex = (_controller.offset / 1180).round(); // 각 항목의 높이가 1180 이라고 가정
+    });
   }
 
   @override
@@ -43,26 +56,28 @@ class _OneViewState extends State<OneView> {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return InkWell(
+                return HeaderItem(
+                  header: _headers[index],
+                  isSelected: _selectedHeaderIndex == index,
                   onTap: () {
-                    debugPrint("----------${dataKey.currentContext}");
-                    Scrollable.ensureVisible(dataKey.currentContext!);
+                    setState(() {
+                      _controller.animateTo(
+                        index * 1180.0, // 헤더 위치로 스크롤
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    });
                   },
-                  child: Container(
-                    color: Colors.grey,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    child: Text('item $index'),
-                  ),
                 );
               },
-              itemCount: 10,
+              itemCount: _headers.length,
             ),
           ),
           Flexible(
             fit: FlexFit.tight,
             flex: 3,
             child: CustomScrollView(
-              controller: controller,
+              controller: _controller,
               slivers: [
                 Section(
                   title: 'Category #1',
@@ -73,12 +88,6 @@ class _OneViewState extends State<OneView> {
                             title: Text('Item #${index + 1}'),
                           )),
                 ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    color: Colors.purple,
-                    height: 100,
-                  ),
-                ),
                 Section(
                   title: 'Category #2',
                   headerColor: Colors.red,
@@ -87,30 +96,6 @@ class _OneViewState extends State<OneView> {
                       (index) => ListTile(
                             title: Text('Item #${index + 11}'),
                           )),
-                ),
-                MultiSliver(
-                  pushPinnedChildren: true,
-                  children: [
-                    SliverPinnedHeader(
-                      child: ColoredBox(
-                        key: dataKey,
-                        color: Colors.yellow,
-                        child: ListTile(
-                          textColor: Colors.grey,
-                          title: Text('Category #2'),
-                        ),
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildListDelegate.fixed(
-                        List.generate(
-                            20,
-                            (index) => ListTile(
-                                  title: Text('Item #${index + 11}'),
-                                )),
-                      ),
-                    ),
-                  ],
                 ),
                 Section(
                   title: 'Category #3',
@@ -173,13 +158,29 @@ class Section extends MultiSliver {
         );
 }
 
-class FirstWidget extends StatelessWidget {
-  const FirstWidget({Key? key}) : super(key: key);
+class HeaderItem extends StatelessWidget {
+  final String header;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const HeaderItem({
+    Key? key,
+    required this.header,
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Text("First Widget"), ...List.generate(33, (index) => Text("item $index"))],
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        color: isSelected ? Colors.grey : null,
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          header,
+        ),
+      ),
     );
   }
 }
