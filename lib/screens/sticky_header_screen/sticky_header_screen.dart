@@ -30,47 +30,21 @@ class _StickyHeadersScreenState extends State<StickyHeadersScreen> {
       body: CustomScrollView(
         slivers: [
           SliverStickyHeader(
-            header: Container(
-              height: 60.0,
-              color: Colors.lightBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Header #0',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            /// 일부 섹션에서 헤더 제거
+            header: const SizedBox.shrink(),
             sliver: const SliverToBoxAdapter(
               /// 일반 위젯을 SliverToBoxAdapter로 감쌈
               child: SubWidget(),
             ),
           ),
           SliverStickyHeader(
-            header: Container(
-              height: 60.0,
-              color: Colors.lightBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Header #1',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            header: const SizedBox.shrink(),
             sliver: const SliverToBoxAdapter(
               child: SubWidget2(),
             ),
           ),
           SliverStickyHeader(
-            header: Container(
-              height: 60.0,
-              color: Colors.lightBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Header #2',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            header: const SizedBox.shrink(),
             sliver: SliverToBoxAdapter(
               child: SubListView(
                 itemBuilder: (context, index) {
@@ -97,20 +71,11 @@ class _StickyHeadersScreenState extends State<StickyHeadersScreen> {
               ),
             ),
             sliver: const SliverToBoxAdapter(
-              child: SubWidget2(),
+              child: SubWidget(),
             ),
           ),
           SliverStickyHeader(
-            header: Container(
-              height: 60.0,
-              color: Colors.lightBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Header #4',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            header: const SizedBox.shrink(),
             sliver: SliverToBoxAdapter(
               child: SubListView(
                 itemBuilder: (context, index) {
