@@ -12,13 +12,32 @@ class StickyHeadersScreen extends StatefulWidget {
   State<StickyHeadersScreen> createState() => _StickyHeadersScreenState();
 }
 
-class _StickyHeadersScreenState extends State<StickyHeadersScreen> {
+class _StickyHeadersScreenState extends State<StickyHeadersScreen> with SingleTickerProviderStateMixin {
+  late TabController? _tabController;
+  int _currentTab = 0;
   int _listCount = 3;
 
   void _incrementCounter() {
     setState(() {
       _listCount += 3;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      initialIndex: 0,
+      vsync: this,
+      animationDuration: Duration.zero,
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,34 +79,43 @@ class _StickyHeadersScreenState extends State<StickyHeadersScreen> {
             ),
           ),
           SliverStickyHeader(
-            header: Container(
-              height: 60.0,
-              color: Colors.lightBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Header #3',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            header: const SizedBox.shrink(),
             sliver: const SliverToBoxAdapter(
               child: SubWidget(),
             ),
           ),
           SliverStickyHeader(
-            header: const SizedBox.shrink(),
-            sliver: SliverToBoxAdapter(
-              child: SubListView(
-                itemBuilder: (context, index) {
-                  return SubListItemView(title: "$index 제목");
+            header: Container(
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(icon: Icon(Icons.home), text: 'Home'),
+                  Tab(icon: Icon(Icons.settings), text: 'Settings'),
+                ],
+                onTap: (value) {
+                  setState(() {
+                    _currentTab = value;
+                  });
                 },
-                separatorBuilder: (context, index) => const Divider(
-                  color: Colors.black38,
-                ),
-                itemCount: 2,
-                onSelected: (index) {},
-                onPressedMore: () {},
               ),
+            ),
+            sliver: SliverToBoxAdapter(
+              child: _currentTab == 0
+
+                  /// 첫 번째 탭이 선택됐을 때
+                  ? Container(
+                      color: Colors.yellow,
+                      height: 600,
+                      child: const Center(child: Text('Home Screen', style: TextStyle(fontSize: 24))),
+                    )
+
+                  /// 두 번째 탭이 선택됐을 때
+                  : Container(
+                      color: Colors.green,
+                      height: 400,
+                      child: const Center(child: Text('Settings Screen', style: TextStyle(fontSize: 24))),
+                    ),
             ),
           ),
 
