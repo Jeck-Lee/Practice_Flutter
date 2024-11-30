@@ -16,6 +16,19 @@ class HomeScreen extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: <Widget>[
+                /// Header section scrollView
+                ElevatedButton(
+                  onPressed: () {
+                    context.pushNamed("headerScrollViewRouteName");
+                  },
+                  child: const Text(
+                    "Header ScrollView",
+                  ),
+                ),
+                const SizedBox(height: 48),
+
+                /// Router Test
+                const Text("Router Test"),
                 ElevatedButton(
                   onPressed: () {
                     context.push("/content");
@@ -25,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 36),
-            
+
                 /// 1. 루트에서 /content/detail 경로로 이동하게 되면 content 화면과 detail 화면이 둘 다 추가될까?
                 ElevatedButton(
                   onPressed: () {
@@ -45,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 36),
-            
+
                 /// 2. 상대 경로로 화면을 추가할 수 있는 방법은 없을까?
                 ElevatedButton(
                   onPressed: () {
@@ -56,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-            
+
                 /// 2-a-i. 경로를 모두 루트에 작성하면?
                 ElevatedButton(
                   onPressed: () {
@@ -99,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-            
+
                 /// 2-b. 라우터 코드에 name 추가
                 ElevatedButton(
                   onPressed: () {

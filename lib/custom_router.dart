@@ -4,6 +4,7 @@ import 'package:practice_flutter/screens/b_screen.dart';
 import 'package:practice_flutter/screens/content_screen.dart';
 import 'package:practice_flutter/screens/detail_screen.dart';
 import 'package:practice_flutter/screens/home_screen.dart';
+import 'package:practice_flutter/screens/sticky_header_screen.dart';
 
 class CustomRouter {
   static GoRouter router = GoRouter(
@@ -24,6 +25,12 @@ class CustomRouter {
                 builder: (context, state) => const DetailScreen(),
               ),
             ],
+          ),
+
+          GoRoute(
+            path: "headerScrollView",
+            name: "headerScrollViewRouteName",
+            builder: (context, state) => const StickyHeadersScreen(),
           ),
         ],
       ),
